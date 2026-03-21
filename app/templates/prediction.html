@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2 class="text-success">Waste Prediction</h2>
+<hr>
+<p>This page predicts future plastic waste based on existing data.</p>
+
+<button class="btn btn-success" onclick="loadPrediction()">Generate Prediction</button>
+
+<div id="predictionResult" class="mt-4"></div>
+
+<canvas id="predictionChart" class="mt-4"></canvas>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+function loadPrediction() {
+    fetch('/api/forecast')
+    .then(res => res.json())
+    .then(data => {
+        if (data.message) {
+            document.getElementById('predictionResult').innerHTML = 
+                '<div class="alert alert-warning">' + data.message + '</div>';
+            return;
+        }
+
+        let html = '<h4>Predicted Waste for Next 3 Months:</h4>';
+        html += '<table class="table table-bordered mt-3">';
+        html += '<thead class="table-success"><tr><th>Month</th><th>Predicted Waste (kg)</th></tr></thead>';
+        html += '<tbody>';
+        data.forEach(row => {
+            html += '<tr><td>' + row.month + '</td><td>' + row.predicted_kg + ' kg</td></tr>';
+        });
+        html += '</tbody></table>';
+        document.getElementById('predictionResult').innerHTML = html;
+
+        new Chart(document.getElementById('predictionChart'), {
+            type: 'line',
+            data: {
+                labels: data.map(d => d.month),
+                datasets: [{
+                    label: 'Predicted Waste (kg)',
+                    data: data.map(d => d.predicted_kg),
+                    borderColor: '#198754',
+                    backgroundColor: 'rgba(25, 135, 84, 0.2)',
+                    tension: 0.4
+                }]
+            }
+        });
+    });
+}
+</script>
+{% endblock %}

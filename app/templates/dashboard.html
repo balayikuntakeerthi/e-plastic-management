@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2 class="text-success">Waste Management Dashboard</h2>
+<hr>
+
+<div class="row mt-4">
+    <div class="col-md-6">
+        <div class="card p-3">
+            <h5 class="text-center">Waste by Location</h5>
+            <canvas id="locationChart"></canvas>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card p-3">
+            <h5 class="text-center">Waste by Plastic Type</h5>
+            <canvas id="typeChart"></canvas>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Waste by Location Chart
+    fetch('/api/waste-by-location')
+    .then(res => res.json())
+    .then(data => {
+        new Chart(document.getElementById('locationChart'), {
+            type: 'bar',
+            data: {
+                labels: Object.keys(data),
+                datasets: [{
+                    label: 'Waste (kg)',
+                    data: Object.values(data),
+                    backgroundColor: '#198754'
+                }]
+            }
+        });
+    });
+
+    // Waste by Plastic Type Chart
+    fetch('/api/waste-by-type')
+    .then(res => res.json())
+    .then(data => {
+        new Chart(document.getElementById('typeChart'), {
+            type: 'pie',
+            data: {
+                labels: Object.keys(data),
+                datasets: [{
+                    data: Object.values(data),
+                    backgroundColor: ['#198754', '#0d6efd', '#ffc107', '#dc3545']
+                }]
+            }
+        });
+    });
+</script>
+{% endblock %}
