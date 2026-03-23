@@ -1,0 +1,113 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2 class="text-success">All Waste Records</h2>
+<hr>
+<table class="table table-bordered table-hover">
+    <thead class="table-success">
+        <tr>
+            <th>ID</th>
+            <th>Location</th>
+            <th>Plastic Type</th>
+            <th>Quantity (kg)</th>
+            <th>Date</th>
+            <th>Recorded By</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for record, location, plastic_type in records %}
+        <tr id="row-{{ record.id }}">
+            <td>{{ record.id }}</td>
+            <td>{{ location }}</td>
+            <td>{{ plastic_type }}</td>
+            <td id="qty-{{ record.id }}">{{ record.quantity_kg }}</td>
+            <td id="date-{{ record.id }}">{{ record.recorded_date }}</td>
+            <td id="by-{{ record.id }}">{{ record.recorded_by }}</td>
+            <td>
+                <button class="btn btn-warning btn-sm" 
+                    onclick="editRecord({{ record.id }}, '{{ record.quantity_kg }}', '{{ record.recorded_date }}', '{{ record.recorded_by }}')">
+                    Edit
+                </button>
+                <button class="btn btn-danger btn-sm" 
+                    onclick="deleteRecord({{ record.id }})">
+                    Delete
+                </button>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<a href="/" class="btn btn-outline-success">Back to Home</a>
+
+<!-- Edit Modal -->
+<div class="modal fade" id="editModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-success text-white">
+                <h5 class="modal-title">Edit Record</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="editId">
+                <div class="mb-3">
+                    <label class="form-label">Quantity (kg)</label>
+                    <input type="number" id="editQty" class="form-control" step="0.1">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Date</label>
+                    <input type="date" id="editDate" class="form-control">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Recorded By</label>
+                    <input type="text" id="editBy" class="form-control">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-success" onclick="saveEdit()">Save Changes</button>
+                <button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function deleteRecord(id) {
+    if (confirm('Are you sure you want to delete this record?')) {
+        fetch('/api/delete-record/' + id, { method: 'DELETE' })
+        .then(res => res.json())
+        .then(data => {
+            alert(data.message);
+            document.getElementById('row-' + id).remove();
+        });
+    }
+}
+
+function editRecord(id, qty, date, by) {
+    document.getElementById('editId').value = id;
+    document.getElementById('editQty').value = qty;
+    document.getElementById('editDate').value = date;
+    document.getElementById('editBy').value = by;
+    new bootstrap.Modal(document.getElementById('editModal')).show();
+}
+
+function saveEdit() {
+    const id = document.getElementById('editId').value;
+    const data = {
+        quantity_kg: document.getElementById('editQty').value,
+        date: document.getElementById('editDate').value,
+        recorded_by: document.getElementById('editBy').value
+    };
+    fetch('/api/edit-record/' + id, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+    })
+    .then(res => res.json())
+    .then(result => {
+        alert(result.message);
+        location.reload();
+    });
+}
+</script>
+{% endblock %}

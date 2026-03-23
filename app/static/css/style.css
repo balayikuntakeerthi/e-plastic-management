@@ -1,0 +1,131 @@
+/* General */
+body {
+    background-color: #f0f7f0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Navbar */
+.navbar {
+    background: linear-gradient(135deg, #1a7a3c, #2ecc71) !important;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    padding: 15px 20px;
+}
+
+.navbar-brand {
+    font-size: 1.5rem;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
+/* Cards */
+.card {
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    transition: transform 0.2s;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+
+/* Buttons */
+.btn-success {
+    background: linear-gradient(135deg, #1a7a3c, #2ecc71);
+    border: none;
+    border-radius: 25px;
+    padding: 10px 25px;
+    font-weight: bold;
+    transition: all 0.3s;
+}
+
+.btn-success:hover {
+    transform: scale(1.05);
+    box-shadow: 0 5px 15px rgba(46,204,113,0.4);
+}
+
+.btn-outline-success {
+    border-radius: 25px;
+    padding: 10px 25px;
+    font-weight: bold;
+    border: 2px solid #1a7a3c;
+    color: #1a7a3c;
+    transition: all 0.3s;
+}
+
+.btn-outline-success:hover {
+    background: linear-gradient(135deg, #1a7a3c, #2ecc71);
+    transform: scale(1.05);
+}
+
+/* Home page */
+.welcome-section {
+    background: white;
+    border-radius: 20px;
+    padding: 60px 40px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    margin-top: 30px;
+}
+
+.welcome-section h1 {
+    font-size: 2.5rem;
+    font-weight: bold;
+}
+
+/* Forms */
+.form-control {
+    border-radius: 10px;
+    border: 2px solid #d4edda;
+    padding: 10px 15px;
+    transition: all 0.3s;
+}
+
+.form-control:focus {
+    border-color: #2ecc71;
+    box-shadow: 0 0 10px rgba(46,204,113,0.3);
+}
+
+/* Tables */
+.table {
+    background: white;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.table thead {
+    background: linear-gradient(135deg, #1a7a3c, #2ecc71);
+    color: white;
+}
+
+.table tbody tr:hover {
+    background-color: #f0f7f0;
+}
+
+/* Login page */
+.login-card {
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    padding: 40px;
+}
+
+/* Dashboard */
+.chart-card {
+    background: white;
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    margin-bottom: 20px;
+}
+
+/* Headings */
+h2 {
+    font-weight: bold;
+    font-size: 2rem;
+}
+
+hr {
+    border: 2px solid #2ecc71;
+    opacity: 1;
+    margin-bottom: 25px;
+}

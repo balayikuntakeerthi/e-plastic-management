@@ -1,3 +1,4 @@
+
 {% extends 'base.html' %}
 
 {% block content %}
@@ -6,22 +7,36 @@
 
 <div class="row mt-4">
     <div class="col-md-6">
-        <div class="card p-3">
+        <div class="chart-card">
             <h5 class="text-center">Waste by Location</h5>
             <canvas id="locationChart"></canvas>
         </div>
     </div>
     <div class="col-md-6">
-        <div class="card p-3">
+        <div class="chart-card">
             <h5 class="text-center">Waste by Plastic Type</h5>
             <canvas id="typeChart"></canvas>
         </div>
     </div>
 </div>
 
+<div class="row mt-4">
+    <div class="col-md-6">
+        <div class="chart-card">
+            <h5 class="text-center">Waste Over Time</h5>
+            <canvas id="timeChart"></canvas>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="chart-card">
+            <h5 class="text-center">Recyclable vs Non Recyclable</h5>
+            <canvas id="recyclableChart"></canvas>
+        </div>
+    </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-    // Waste by Location Chart
     fetch('/api/waste-by-location')
     .then(res => res.json())
     .then(data => {
@@ -29,16 +44,11 @@
             type: 'bar',
             data: {
                 labels: Object.keys(data),
-                datasets: [{
-                    label: 'Waste (kg)',
-                    data: Object.values(data),
-                    backgroundColor: '#198754'
-                }]
+                datasets: [{ label: 'Waste (kg)', data: Object.values(data), backgroundColor: '#198754' }]
             }
         });
     });
 
-    // Waste by Plastic Type Chart
     fetch('/api/waste-by-type')
     .then(res => res.json())
     .then(data => {
@@ -46,10 +56,31 @@
             type: 'pie',
             data: {
                 labels: Object.keys(data),
-                datasets: [{
-                    data: Object.values(data),
-                    backgroundColor: ['#198754', '#0d6efd', '#ffc107', '#dc3545']
-                }]
+                datasets: [{ data: Object.values(data), backgroundColor: ['#198754', '#0d6efd', '#ffc107', '#dc3545'] }]
+            }
+        });
+    });
+
+    fetch('/api/waste-over-time')
+    .then(res => res.json())
+    .then(data => {
+        new Chart(document.getElementById('timeChart'), {
+            type: 'line',
+            data: {
+                labels: Object.keys(data),
+                datasets: [{ label: 'Waste (kg)', data: Object.values(data), borderColor: '#198754', backgroundColor: 'rgba(25,135,84,0.2)', tension: 0.4, fill: true }]
+            }
+        });
+    });
+
+    fetch('/api/recyclable-vs-nonrecyclable')
+    .then(res => res.json())
+    .then(data => {
+        new Chart(document.getElementById('recyclableChart'), {
+            type: 'doughnut',
+            data: {
+                labels: Object.keys(data),
+                datasets: [{ data: Object.values(data), backgroundColor: ['#198754', '#dc3545'] }]
             }
         });
     });
