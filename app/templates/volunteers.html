@@ -1,0 +1,105 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2 class="text-success">Volunteers</h2>
+<hr>
+
+<button class="btn btn-success mb-3" onclick="document.getElementById('addVolunteerForm').style.display='block'">
+    + Add New Volunteer
+</button>
+
+<div id="addVolunteerForm" style="display:none;" class="card p-4 mb-4">
+    <h5>Add New Volunteer</h5>
+    <div class="mb-3">
+        <label class="form-label">Name</label>
+        <input type="text" id="vol_name" class="form-control" placeholder="Volunteer name">
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Email</label>
+        <input type="email" id="vol_email" class="form-control" placeholder="Email address">
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Phone</label>
+        <input type="text" id="vol_phone" class="form-control" placeholder="Phone number">
+    </div>
+    <div class="mb-3">
+        <label class="form-label">NSS Team</label>
+        <select id="vol_team" class="form-control">
+            <option value="">Select Team</option>
+            {% for team in teams %}
+            <option value="{{ team.id }}">{{ team.team_name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Joined Date</label>
+        <input type="date" id="vol_date" class="form-control">
+    </div>
+    <button class="btn btn-success" onclick="addVolunteer()">Save Volunteer</button>
+    <button class="btn btn-secondary ms-2" onclick="document.getElementById('addVolunteerForm').style.display='none'">Cancel</button>
+</div>
+
+<table class="table table-bordered table-hover">
+    <thead class="table-success">
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>Team</th>
+            <th>Joined Date</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for volunteer in volunteers %}
+        <tr id="vol-row-{{ volunteer.id }}">
+            <td>{{ volunteer.id }}</td>
+            <td>{{ volunteer.name }}</td>
+            <td>{{ volunteer.email }}</td>
+            <td>{{ volunteer.phone }}</td>
+            <td>{{ volunteer.team.team_name if volunteer.team else 'No Team' }}</td>
+            <td>{{ volunteer.joined_date }}</td>
+            <td>
+                <button class="btn btn-danger btn-sm" onclick="deleteVolunteer({{ volunteer.id }})">Delete</button>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<a href="/" class="btn btn-outline-success">Back to Home</a>
+
+<script>
+function addVolunteer() {
+    const data = {
+        name: document.getElementById('vol_name').value,
+        email: document.getElementById('vol_email').value,
+        phone: document.getElementById('vol_phone').value,
+        team_id: document.getElementById('vol_team').value,
+        joined_date: document.getElementById('vol_date').value
+    };
+    fetch('/api/add-volunteer', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+    })
+    .then(res => res.json())
+    .then(result => {
+        alert(result.message);
+        location.reload();
+    });
+}
+
+function deleteVolunteer(id) {
+    if (confirm('Are you sure you want to delete this volunteer?')) {
+        fetch('/api/delete-volunteer/' + id, { method: 'DELETE' })
+        .then(res => res.json())
+        .then(data => {
+            alert(data.message);
+            document.getElementById('vol-row-' + id).remove();
+        });
+    }
+}
+</script>
+{% endblock %}

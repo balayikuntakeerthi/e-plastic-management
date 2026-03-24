@@ -1,3 +1,4 @@
+
 from app import db
 from flask_login import UserMixin
 
@@ -20,6 +21,23 @@ class PlasticType(db.Model):
     name = db.Column(db.String(100), nullable=False)
     recyclable = db.Column(db.Boolean, default=True)
 
+class NSSTeam(db.Model):
+    __tablename__ = 'nss_teams'
+    id = db.Column(db.Integer, primary_key=True)
+    team_name = db.Column(db.String(100), nullable=False)
+    team_leader = db.Column(db.String(100))
+    location_id = db.Column(db.Integer, db.ForeignKey('locations.id'))
+    volunteers = db.relationship('Volunteer', backref='team', lazy=True)
+
+class Volunteer(db.Model):
+    __tablename__ = 'volunteers'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+    email = db.Column(db.String(100))
+    phone = db.Column(db.String(15))
+    team_id = db.Column(db.Integer, db.ForeignKey('nss_teams.id'))
+    joined_date = db.Column(db.Date)
+
 class WasteRecord(db.Model):
     __tablename__ = 'waste_records'
     id = db.Column(db.Integer, primary_key=True)
@@ -28,3 +46,4 @@ class WasteRecord(db.Model):
     quantity_kg = db.Column(db.Numeric(10,2), nullable=False)
     recorded_date = db.Column(db.Date, nullable=False)
     recorded_by = db.Column(db.String(100))
+    team_id = db.Column(db.Integer, db.ForeignKey('nss_teams.id'))
