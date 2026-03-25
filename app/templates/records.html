@@ -25,14 +25,18 @@
             <td id="date-{{ record.id }}">{{ record.recorded_date }}</td>
             <td id="by-{{ record.id }}">{{ record.recorded_by }}</td>
             <td>
-                <button class="btn btn-warning btn-sm" 
+                {% if current_user.is_admin() %}
+                <button class="btn btn-warning btn-sm"
                     onclick="editRecord({{ record.id }}, '{{ record.quantity_kg }}', '{{ record.recorded_date }}', '{{ record.recorded_by }}')">
                     Edit
                 </button>
-                <button class="btn btn-danger btn-sm" 
+                <button class="btn btn-danger btn-sm"
                     onclick="deleteRecord({{ record.id }})">
                     Delete
                 </button>
+                {% else %}
+                <span class="badge bg-secondary">View Only</span>
+                {% endif %}
             </td>
         </tr>
         {% endfor %}

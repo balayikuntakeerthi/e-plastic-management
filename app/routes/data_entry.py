@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, request, jsonify
-from flask_login import login_required
+from flask_login import login_required, current_user
 from app import db
 from app.models import WasteRecord, Location, PlasticType
 from datetime import datetime
@@ -45,6 +45,8 @@ def records():
 @data_bp.route('/api/delete-record/<int:id>', methods=['DELETE'])
 @login_required
 def delete_record(id):
+    if not current_user.is_admin():
+        return jsonify({'message': 'Access denied! Only admin can delete records.'})
     record = WasteRecord.query.get(id)
     if record:
         db.session.delete(record)
@@ -55,6 +57,8 @@ def delete_record(id):
 @data_bp.route('/api/edit-record/<int:id>', methods=['PUT'])
 @login_required
 def edit_record(id):
+    if not current_user.is_admin():
+        return jsonify({'message': 'Access denied! Only admin can edit records.'})
     record = WasteRecord.query.get(id)
     if record:
         data = request.json
@@ -64,3 +68,5 @@ def edit_record(id):
         db.session.commit()
         return jsonify({'message': 'Record updated successfully!'})
     return jsonify({'message': 'Record not found!'})
+
+

@@ -7,6 +7,10 @@ class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(100), nullable=False, unique=True)
     password = db.Column(db.String(200), nullable=False)
+    role = db.Column(db.String(20), default='volunteer')
+
+    def is_admin(self):
+        return self.role == 'admin'
 
 class Location(db.Model):
     __tablename__ = 'locations'
@@ -47,3 +51,11 @@ class WasteRecord(db.Model):
     recorded_date = db.Column(db.Date, nullable=False)
     recorded_by = db.Column(db.String(100))
     team_id = db.Column(db.Integer, db.ForeignKey('nss_teams.id'))
+
+class Event(db.Model):
+    __tablename__ = 'events'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(200), nullable=False)
+    event_date = db.Column(db.String(50), nullable=False)
+    description = db.Column(db.Text)
+    is_fixed = db.Column(db.Boolean, default=False)

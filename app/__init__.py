@@ -25,10 +25,12 @@ def create_app():
     from app.routes.prediction import predict_bp
     from app.routes.auth import auth_bp
     from app.routes.nss import nss_bp
+    from app.routes.events import events_bp
     app.register_blueprint(data_bp)
     app.register_blueprint(analysis_bp)
     app.register_blueprint(predict_bp)
     app.register_blueprint(auth_bp)
     app.register_blueprint(nss_bp)
+    app.register_blueprint(events_bp)
 
     return app
