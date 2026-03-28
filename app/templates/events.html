@@ -1,3 +1,4 @@
+
 {% extends 'base.html' %}
 
 {% block content %}
@@ -46,11 +47,19 @@
                 </p>
                 <p>{{ event.description }}</p>
             </div>
-            {% if current_user.is_admin() and not event.is_fixed %}
-            <div class="card-footer">
+            <div class="card-footer d-flex justify-content-between">
+                <a href="/events/register/{{ event.id }}" class="btn btn-success btn-sm">
+                    📝 Register
+                </a>
+                {% if current_user.is_admin() %}
+                <a href="/events/registrations/{{ event.id }}" class="btn btn-outline-success btn-sm">
+                    👥 View Registrations
+                </a>
+                {% endif %}
+                {% if current_user.is_admin() and not event.is_fixed %}
                 <button class="btn btn-danger btn-sm" onclick="deleteEvent({{ event.id }})">Delete</button>
+                {% endif %}
             </div>
-            {% endif %}
         </div>
     </div>
     {% endfor %}

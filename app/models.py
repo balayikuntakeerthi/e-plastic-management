@@ -8,9 +8,13 @@ class User(UserMixin, db.Model):
     username = db.Column(db.String(100), nullable=False, unique=True)
     password = db.Column(db.String(200), nullable=False)
     role = db.Column(db.String(20), default='volunteer')
+    is_superuser = db.Column(db.Boolean, default=False)
 
     def is_admin(self):
-        return self.role == 'admin'
+        return self.role == 'admin' or self.is_superuser
+
+    def is_super(self):
+        return self.is_superuser == True
 
 class Location(db.Model):
     __tablename__ = 'locations'
@@ -59,3 +63,14 @@ class Event(db.Model):
     event_date = db.Column(db.String(50), nullable=False)
     description = db.Column(db.Text)
     is_fixed = db.Column(db.Boolean, default=False)
+    registrations = db.relationship('EventRegistration', backref='event', lazy=True)
+
+class EventRegistration(db.Model):
+    __tablename__ = 'event_registrations'
+    id = db.Column(db.Integer, primary_key=True)
+    event_id = db.Column(db.Integer, db.ForeignKey('events.id'))
+    name = db.Column(db.String(100), nullable=False)
+    email = db.Column(db.String(100))
+    phone = db.Column(db.String(15))
+    team_name = db.Column(db.String(100))
+    registered_at = db.Column(db.DateTime)

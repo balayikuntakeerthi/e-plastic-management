@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2 class="text-success">Registrations for {{ event.name }}</h2>
+<hr>
+
+<div class="card p-3 mb-4">
+    <p><strong>Event Date:</strong> {{ event.event_date }}</p>
+    <p><strong>Total Registrations:</strong> {{ registrations|length }}</p>
+</div>
+
+<table class="table table-bordered table-hover">
+    <thead class="table-success">
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>Team Name</th>
+            <th>Registered At</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for reg in registrations %}
+        <tr>
+            <td>{{ reg.id }}</td>
+            <td>{{ reg.name }}</td>
+            <td>{{ reg.email }}</td>
+            <td>{{ reg.phone }}</td>
+            <td>{{ reg.team_name }}</td>
+            <td>{{ reg.registered_at }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<a href="/events" class="btn btn-outline-success">Back to Events</a>
+{% endblock %}

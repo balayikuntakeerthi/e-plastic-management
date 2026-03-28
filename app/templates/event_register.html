@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2 class="text-success">Register for Event</h2>
+<hr>
+
+<div class="card p-4 shadow mb-4">
+    <div class="card-header bg-success text-white mb-3">
+        <h5 class="mb-0">{{ event.name }}</h5>
+        <small>📅 {{ event.event_date }}</small>
+    </div>
+    <p>{{ event.description }}</p>
+</div>
+
+<div class="card p-4 shadow">
+    <h5 class="text-success mb-3">Fill Registration Form</h5>
+    <form method="POST">
+        <div class="mb-3">
+            <label class="form-label">Full Name</label>
+            <input type="text" name="name" class="form-control" required placeholder="Enter your full name">
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Email</label>
+            <input type="email" name="email" class="form-control" required placeholder="Enter your email">
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Phone Number</label>
+            <input type="text" name="phone" class="form-control" required placeholder="Enter your phone number">
+        </div>
+        <div class="mb-3">
+            <label class="form-label">NSS Team Name</label>
+            <input type="text" name="team_name" class="form-control" placeholder="Enter your NSS team name">
+        </div>
+        <button type="submit" class="btn btn-success">Register Now</button>
+        <a href="/events" class="btn btn-outline-secondary ms-2">Cancel</a>
+    </form>
+</div>
+{% endblock %}

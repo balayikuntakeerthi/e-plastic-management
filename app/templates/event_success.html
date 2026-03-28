@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="text-center mt-5">
+    <div class="card p-5 shadow">
+        <h1 class="text-success mb-3">🎉 Registration Successful!</h1>
+        <h4 class="mb-3">You have successfully registered for:</h4>
+        <h3 class="text-success">{{ event.name }}</h3>
+        <p class="text-muted mt-2">📅 {{ event.event_date }}</p>
+        <hr>
+        <p class="lead">Thank you for participating in this environmental event! Together we can make a difference. 🌿</p>
+        <div class="mt-4">
+            <a href="/events" class="btn btn-success me-3">Back to Events</a>
+            <a href="/" class="btn btn-outline-success">Go to Home</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
