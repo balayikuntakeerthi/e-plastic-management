@@ -42,9 +42,15 @@ def registration_success(event_id):
 def view_registrations(event_id):
     if not current_user.is_admin():
         return redirect(url_for('events.events'))
-    event = Event.query.get(event_id)
+    event = Event.query.get_or_404(event_id)
     registrations = EventRegistration.query.filter_by(event_id=event_id).all()
-    return render_template('event_registrations.html', event=event, registrations=registrations)
+
+    return render_template(
+        'event_registrations.html',
+        event=event,
+        registrations=registrations
+    )
+
 
 @events_bp.route('/api/add-event', methods=['POST'])
 @login_required

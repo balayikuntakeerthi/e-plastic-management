@@ -5,10 +5,12 @@ from sqlalchemy import func
 
 analysis_bp = Blueprint('analysis', __name__)
 
+# Dashboard page
 @analysis_bp.route('/dashboard')
 def dashboard():
     return render_template('dashboard.html')
 
+# Waste by Location
 @analysis_bp.route('/api/waste-by-location')
 def waste_by_location():
     results = db.session.query(
@@ -19,6 +21,7 @@ def waste_by_location():
     data = {row[0]: float(row[1]) for row in results}
     return jsonify(data)
 
+# Waste by Plastic Type
 @analysis_bp.route('/api/waste-by-type')
 def waste_by_type():
     results = db.session.query(
@@ -29,6 +32,7 @@ def waste_by_type():
     data = {row[0]: float(row[1]) for row in results}
     return jsonify(data)
 
+# Waste Over Time
 @analysis_bp.route('/api/waste-over-time')
 def waste_over_time():
     results = db.session.query(
@@ -38,6 +42,7 @@ def waste_over_time():
     data = {row[0]: float(row[1]) for row in results}
     return jsonify(data)
 
+# Recyclable vs Non-Recyclable
 @analysis_bp.route('/api/recyclable-vs-nonrecyclable')
 def recyclable_vs_non():
     recyclable = db.session.query(
@@ -54,3 +59,13 @@ def recyclable_vs_non():
         'Recyclable': float(recyclable),
         'Non Recyclable': float(non_recyclable)
     })
+
+# ✅ New route: Total Wastage Collected
+@analysis_bp.route('/api/waste-collected')
+def waste_collected():
+    results = db.session.query(
+        func.date_format(WasteRecord.recorded_date, '%Y-%m').label('month'),
+        func.sum(WasteRecord.quantity_kg)
+    ).group_by('month').order_by('month').all()
+    data = {row[0]: float(row[1]) for row in results}
+    return jsonify(data)

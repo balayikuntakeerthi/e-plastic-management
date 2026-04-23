@@ -4,19 +4,21 @@
 <h2 class="text-success">NSS Teams</h2>
 <hr>
 
+<!-- Add New Team Button -->
 <button class="btn btn-success mb-3" onclick="document.getElementById('addTeamForm').style.display='block'">
     + Add New Team
 </button>
 
+<!-- Add Team Form -->
 <div id="addTeamForm" style="display:none;" class="card p-4 mb-4">
-    <h5>Add New NSS Team</h5>
+    <h5>Add New Team</h5>
     <div class="mb-3">
         <label class="form-label">Team Name</label>
-        <input type="text" id="team_name" class="form-control" placeholder="e.g. Green Warriors">
+        <input type="text" id="team_name" class="form-control" placeholder="Team name">
     </div>
     <div class="mb-3">
         <label class="form-label">Team Leader</label>
-        <input type="text" id="team_leader" class="form-control" placeholder="Leader name">
+        <input type="text" id="team_leader" class="form-control" placeholder="Team leader">
     </div>
     <div class="mb-3">
         <label class="form-label">Location</label>
@@ -31,6 +33,7 @@
     <button class="btn btn-secondary ms-2" onclick="document.getElementById('addTeamForm').style.display='none'">Cancel</button>
 </div>
 
+<!-- Teams Table -->
 <table class="table table-bordered table-hover">
     <thead class="table-success">
         <tr>
@@ -38,26 +41,47 @@
             <th>Team Name</th>
             <th>Team Leader</th>
             <th>Location</th>
-            <th>Volunteers</th>
-            <th>Actions</th>
+            <th>Status</th>
+            <th>Delete</th>
         </tr>
     </thead>
-    <tbody id="teamsTable">
+    <tbody>
         {% for team in teams %}
         <tr id="team-row-{{ team.id }}">
             <td>{{ team.id }}</td>
             <td>{{ team.team_name }}</td>
             <td>{{ team.team_leader }}</td>
-            <td>{{ team.location_id }}</td>
-            <td>{{ team.volunteers|length }}</td>
+            <td>{{ team.location.name if team.location else 'No Location' }}</td>
             <td>
-                <button class="btn btn-danger btn-sm" onclick="deleteTeam({{ team.id }})">Delete</button>
+                {% if current_user.is_admin %}
+                    {% if team.enabled %}
+                        <form action="{{ url_for('nss.toggle_team', team_id=team.id, status=0) }}" method="post" style="display:inline;">
+                            <button class="btn btn-warning btn-sm">Disable</button>
+                        </form>
+                    {% else %}
+                        <form action="{{ url_for('nss.toggle_team', team_id=team.id, status=1) }}" method="post" style="display:inline;">
+                            <button class="btn btn-success btn-sm">Enable</button>
+                        </form>
+                    {% endif %}
+                {% else %}
+                    <span class="text-muted">Admin only</span>
+                {% endif %}
+            </td>
+            <td>
+                {% if current_user.is_admin %}
+                    <form action="{{ url_for('nss.delete_team', id=team.id) }}" method="post" style="display:inline;">
+                        <button class="btn btn-danger btn-sm">Delete</button>
+                    </form>
+                {% else %}
+                    <span class="text-muted">Admin only</span>
+                {% endif %}
             </td>
         </tr>
         {% endfor %}
     </tbody>
 </table>
 
+<!-- Back to Home -->
 <a href="/" class="btn btn-outline-success">Back to Home</a>
 
 <script>
@@ -77,17 +101,6 @@ function addTeam() {
         alert(result.message);
         location.reload();
     });
-}
-
-function deleteTeam(id) {
-    if (confirm('Are you sure you want to delete this team?')) {
-        fetch('/api/delete-team/' + id, { method: 'DELETE' })
-        .then(res => res.json())
-        .then(data => {
-            alert(data.message);
-            document.getElementById('team-row-' + id).remove();
-        });
-    }
 }
 </script>
 {% endblock %}

@@ -1,7 +1,37 @@
 /* General */
 body {
-    background-color: #f0f7f0;
+    background-color: #f0f7f0; /* fallback color */
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Background only for home page */
+body.home-page {
+    background-image: url("../images/plasticpicture.jpg.png");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: center;
+    animation: fadeIn 2s ease-in-out; /* fade effect */
+}
+
+/* Overlay for home page */
+body.home-page::before {
+    content: "";
+    position: fixed;
+    top: 0; 
+    left: 0;
+    width: 100%; 
+    height: 100%;
+    background: rgba(0,0,0,0.3); /* adjust opacity: 0.2 lighter, 0.5 darker */
+    z-index: -1; /* keeps overlay behind content */
+}
+
+/* Tagline under welcome heading */
+.tagline {
+    color: #000000;   /* solid black */
+    font-weight: bold; /* bold text */
+    font-size: 1.5rem;   /* increase size (default ~1rem) */
+    text-align: center;  /* optional: center it under the heading */
 }
 
 /* Navbar */
@@ -60,10 +90,10 @@ body {
 
 /* Home page */
 .welcome-section {
-    background: white;
+    background: transparent; 
     border-radius: 20px;
     padding: 60px 40px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    box-shadow: none;
     margin-top: 30px;
 }
 
@@ -128,4 +158,10 @@ hr {
     border: 2px solid #2ecc71;
     opacity: 1;
     margin-bottom: 25px;
+}
+
+/* Fade-in animation */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
 }

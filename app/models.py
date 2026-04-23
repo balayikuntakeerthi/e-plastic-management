@@ -1,6 +1,6 @@
-
 from app import db
 from flask_login import UserMixin
+from datetime import datetime
 
 class User(UserMixin, db.Model):
     __tablename__ = 'users'
@@ -14,7 +14,8 @@ class User(UserMixin, db.Model):
         return self.role == 'admin' or self.is_superuser
 
     def is_super(self):
-        return self.is_superuser == True
+        return self.is_superuser is True
+
 
 class Location(db.Model):
     __tablename__ = 'locations'
@@ -22,6 +23,8 @@ class Location(db.Model):
     name = db.Column(db.String(100), nullable=False)
     city = db.Column(db.String(100))
     state = db.Column(db.String(100))
+    # backref from NSSTeam: teams
+
 
 class PlasticType(db.Model):
     __tablename__ = 'plastic_types'
@@ -29,13 +32,17 @@ class PlasticType(db.Model):
     name = db.Column(db.String(100), nullable=False)
     recyclable = db.Column(db.Boolean, default=True)
 
+
 class NSSTeam(db.Model):
     __tablename__ = 'nss_teams'
     id = db.Column(db.Integer, primary_key=True)
     team_name = db.Column(db.String(100), nullable=False)
     team_leader = db.Column(db.String(100))
     location_id = db.Column(db.Integer, db.ForeignKey('locations.id'))
+    location = db.relationship('Location', backref='teams')
+    enabled = db.Column(db.Boolean, default=True)
     volunteers = db.relationship('Volunteer', backref='team', lazy=True)
+
 
 class Volunteer(db.Model):
     __tablename__ = 'volunteers'
@@ -45,16 +52,29 @@ class Volunteer(db.Model):
     phone = db.Column(db.String(15))
     team_id = db.Column(db.Integer, db.ForeignKey('nss_teams.id'))
     joined_date = db.Column(db.Date)
+    # task_assigned made optional so inserts don’t fail
+    task_assigned = db.Column(db.String(200), nullable=True)
+    task_completed = db.Column(db.Boolean, default=False)
+    enabled = db.Column(db.Boolean, default=True)
+
 
 class WasteRecord(db.Model):
     __tablename__ = 'waste_records'
     id = db.Column(db.Integer, primary_key=True)
     location_id = db.Column(db.Integer, db.ForeignKey('locations.id'))
     plastic_type_id = db.Column(db.Integer, db.ForeignKey('plastic_types.id'))
-    quantity_kg = db.Column(db.Numeric(10,2), nullable=False)
+    quantity_kg = db.Column(db.Numeric(10, 2), nullable=False)
     recorded_date = db.Column(db.Date, nullable=False)
     recorded_by = db.Column(db.String(100))
     team_id = db.Column(db.Integer, db.ForeignKey('nss_teams.id'))
+
+
+class WasteCollection(db.Model):
+    __tablename__ = 'waste_collection'
+    id = db.Column(db.Integer, primary_key=True)
+    month = db.Column(db.String(20), nullable=False)
+    collected_kg = db.Column(db.Integer, nullable=False)
+
 
 class Event(db.Model):
     __tablename__ = 'events'
@@ -65,12 +85,13 @@ class Event(db.Model):
     is_fixed = db.Column(db.Boolean, default=False)
     registrations = db.relationship('EventRegistration', backref='event', lazy=True)
 
+
 class EventRegistration(db.Model):
     __tablename__ = 'event_registrations'
     id = db.Column(db.Integer, primary_key=True)
     event_id = db.Column(db.Integer, db.ForeignKey('events.id'))
     name = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(100))
-    phone = db.Column(db.String(15))
-    team_name = db.Column(db.String(100))
-    registered_at = db.Column(db.DateTime)
+    phone = db.Column(db.String(15))          # ✅ add this
+    team_name = db.Column(db.String(100))     # ✅ add this
+    registered_at = db.Column(db.DateTime, default=datetime.utcnow)
