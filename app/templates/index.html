@@ -3,9 +3,12 @@
 {% block body_class %}home-page{% endblock %}
 
 {% block content %}
-<div class="welcome-section text-center mt-5">
+<div class="welcome-section text-center mt-5 overlay">
     <h1 class="text-success">Welcome to E-Plastic Management System ♻️</h1>
+    
+    <!-- ✅ Tagline styled -->
     <p class="tagline">A smart system to track and analyze plastic waste using data mining.</p>
+    
     <div class="mt-4">
         <a href="/entry" class="btn btn-success btn-lg me-3 mb-3">Add Waste Record</a>
         <a href="/records" class="btn btn-success btn-lg me-3 mb-3">View Records</a>
@@ -14,7 +17,17 @@
         <a href="/nss-teams" class="btn btn-success btn-lg me-3 mb-3">NSS Teams</a>
         <a href="/volunteers" class="btn btn-success btn-lg me-3 mb-3">Volunteers</a>
         <a href="/events" class="btn btn-success btn-lg mb-3">Events</a>
-
     </div>
 </div>
+
+<!-- ✅ Inline CSS for tagline -->
+<style>
+    .tagline {
+        font-size: 2rem;       /* bigger size */
+        font-weight: 700;      /* bold */
+        color: #000;           /* solid black */
+        margin-top: 12px;
+        text-align: center;    /* centered under heading */
+    }
+</style>
 {% endblock %}

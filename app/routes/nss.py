@@ -1,10 +1,16 @@
-from flask import Blueprint, render_template, request, jsonify, redirect, url_for, flash
+from flask import Blueprint, render_template, request, jsonify, redirect, url_for, flash, make_response
 from flask_login import login_required, current_user
 from app import db
 from app.models import NSSTeam, Volunteer, Location
 from datetime import datetime
+import pdfkit   # ✅ for PDF generation
 
 nss_bp = Blueprint('nss', __name__)
+
+# ✅ Configure wkhtmltopdf path
+config = pdfkit.configuration(
+    wkhtmltopdf=r"C:\\wkhtmltopdf\\wkhtmltox-0.12.6-1.mxe-cross-win64\\wkhtmltox\\bin\\wkhtmltopdf.exe"
+)
 
 # Helper function to parse date safely
 def parse_date(date_str):
@@ -80,8 +86,6 @@ def volunteers():
 def add_volunteer():
     data = request.json
     try:
-        print("Received volunteer data:", data)  # Debugging in console
-
         volunteer = Volunteer(
             name=data['name'],
             email=data['email'],
@@ -111,3 +115,62 @@ def delete_volunteer(id):
     db.session.commit()
     flash("Volunteer deleted successfully")
     return redirect(url_for('nss.volunteers'))
+
+# ✅ Edit Volunteer
+@nss_bp.route('/edit_volunteer/<int:id>', methods=['GET', 'POST'])
+@login_required
+def edit_volunteer(id):
+    if not current_user.is_admin:
+        flash("Only admins can edit volunteers")
+        return redirect(url_for('nss.volunteers'))
+
+    volunteer = Volunteer.query.get_or_404(id)
+
+    if request.method == 'POST':
+        volunteer.name = request.form['name']
+        volunteer.email = request.form['email']
+        volunteer.phone = request.form['phone']
+        volunteer.team_id = int(request.form['team_id']) if request.form['team_id'] else None
+        volunteer.joined_date = parse_date(request.form['joined_date'])
+        db.session.commit()
+        flash("Volunteer updated successfully")
+        return redirect(url_for('nss.volunteers'))
+
+    teams = NSSTeam.query.all()
+    return render_template('edit_volunteer.html', volunteer=volunteer, teams=teams)
+
+# ✅ Generate Participation Certificate (HTML view)
+@nss_bp.route('/certificate/<int:id>')
+@login_required
+def generate_certificate(id):
+    if not current_user.is_admin:
+        flash("Only admins can generate certificates")
+        return redirect(url_for('nss.volunteers'))
+
+    volunteer = Volunteer.query.get_or_404(id)
+    return render_template('certificate.html', volunteer=volunteer)
+
+# ✅ Download Certificate as PDF
+@nss_bp.route('/download_certificate/<int:id>')
+@login_required
+def download_certificate(id):
+    if not current_user.is_admin:
+        flash("Only admins can download certificates")
+        return redirect(url_for('nss.volunteers'))
+
+    volunteer = Volunteer.query.get_or_404(id)
+    html = render_template('certificate.html', volunteer=volunteer)
+
+    # ✅ Options to allow local file access and render background images
+    options = {
+        'enable-local-file-access': None,
+        'background': None,
+        'print-media-type': None
+    }
+
+    pdf = pdfkit.from_string(html, False, configuration=config, options=options)
+
+    response = make_response(pdf)
+    response.headers['Content-Type'] = 'application/pdf'
+    response.headers['Content-Disposition'] = f'attachment; filename=certificate_{volunteer.name}.pdf'
+    return response

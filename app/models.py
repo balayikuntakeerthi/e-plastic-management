@@ -6,14 +6,16 @@ class User(UserMixin, db.Model):
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(100), nullable=False, unique=True)
-    password = db.Column(db.String(200), nullable=False)
-    role = db.Column(db.String(20), default='volunteer')
+    password = db.Column(db.String(200), nullable=False)  # long enough for hashed passwords
+    role = db.Column(db.String(20), default='volunteer')  # roles: 'admin', 'volunteer'
     is_superuser = db.Column(db.Boolean, default=False)
 
     def is_admin(self):
+        """Return True if user is admin or superuser."""
         return self.role == 'admin' or self.is_superuser
 
     def is_super(self):
+        """Return True if user is superuser."""
         return self.is_superuser is True
 
 
@@ -52,8 +54,7 @@ class Volunteer(db.Model):
     phone = db.Column(db.String(15))
     team_id = db.Column(db.Integer, db.ForeignKey('nss_teams.id'))
     joined_date = db.Column(db.Date)
-    # task_assigned made optional so inserts don’t fail
-    task_assigned = db.Column(db.String(200), nullable=True)
+    task_assigned = db.Column(db.String(200), nullable=True)  # optional
     task_completed = db.Column(db.Boolean, default=False)
     enabled = db.Column(db.Boolean, default=True)
 
@@ -92,6 +93,6 @@ class EventRegistration(db.Model):
     event_id = db.Column(db.Integer, db.ForeignKey('events.id'))
     name = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(100))
-    phone = db.Column(db.String(15))          # ✅ add this
-    team_name = db.Column(db.String(100))     # ✅ add this
+    phone = db.Column(db.String(15))          # ✅ added
+    team_name = db.Column(db.String(100))     # ✅ added
     registered_at = db.Column(db.DateTime, default=datetime.utcnow)

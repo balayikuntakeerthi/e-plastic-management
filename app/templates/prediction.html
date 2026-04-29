@@ -3,101 +3,125 @@
 {% block content %}
 <h2 class="text-success">Waste Prediction</h2>
 <hr>
-<p>This page shows past waste data and predicts future plastic waste for the next 3 months.</p>
+
+<!-- ✅ Tagline styled -->
+<p class="prediction-tagline">
+    This page shows past waste data and predicts future plastic waste for the next 3 months, state by state.
+</p>
 
 <button class="btn btn-success" onclick="loadPrediction()">Generate Prediction</button>
 
 <div id="predictionResult" class="mt-4"></div>
 
-<div class="chart-card mt-4">
+<!-- Bigger chart -->
+<div class="chart-card mt-4" style="height:600px;">
     <canvas id="predictionChart"></canvas>
 </div>
 
-<!-- ✅ Back to Home button aligned left -->
 <div class="mt-4 text-start">
-    <a href="/" class="btn btn-outline-success">Back to Home</a>
+    <a href="/" class="btn btn-success btn-lg">Back to Home</a>
 </div>
+
+<!-- Custom CSS for better visibility -->
+<style>
+    /* ✅ Tagline styling */
+    .prediction-tagline {
+        font-size: 1.6rem;   /* bigger size */
+        font-weight: bold;   /* bold text */
+        color: #000;         /* solid black */
+        text-align: center;  /* centered under heading */
+        margin-bottom: 15px;
+    }
+
+    /* Headings */
+    h4.state-heading {
+        color: #212529;
+        font-weight: 700;
+        background-color: #f8f9fa;
+        padding: 6px;
+        border-left: 5px solid #198754;
+        margin-top: 20px;
+    }
+
+    /* Table headers */
+    .table-success th {
+        background-color: #198754;
+        color: #fff;
+        font-weight: bold;
+    }
+
+    /* Table rows zebra striping */
+    .table tbody tr:nth-child(odd) {
+        background-color: #f2f2f2;
+    }
+
+    /* General text */
+    th, td {
+        color: #000;
+        font-weight: 500;
+        text-shadow: 0.5px 0.5px 1px #fff;
+    }
+</style>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
 function loadPrediction() {
-    Promise.all([
-        fetch('/api/past-waste').then(res => res.json()),
-        fetch('/api/forecast').then(res => res.json())
-    ])
-    .then(([pastData, futureData]) => {
-        if (futureData.message) {
+    fetch('/api/forecast')
+    .then(res => res.json())
+    .then(forecasts => {
+        if (forecasts.message) {
             document.getElementById('predictionResult').innerHTML =
-                '<div class="alert alert-warning">' + futureData.message + '</div>';
+                '<div class="alert alert-warning">' + forecasts.message + '</div>';
             return;
         }
 
-        // Build table
-        let html = '<h4>Predicted Waste for Next 3 Months:</h4>';
-        html += '<table class="table table-bordered mt-3">';
-        html += '<thead class="table-success"><tr><th>Month</th><th>Predicted Waste (kg)</th></tr></thead>';
-        html += '<tbody>';
-        futureData.forEach(row => {
-            html += '<tr><td>' + row.month + '</td><td>' + row.predicted_kg + ' kg</td></tr>';
+        // Build tables per state
+        let html = '';
+        forecasts.forEach(f => {
+            html += '<h4 class="state-heading">Predicted Waste for ' + f.state + ':</h4>';
+            html += '<table class="table table-bordered mt-3">';
+            html += '<thead class="table-success"><tr><th>Month</th><th>Predicted Waste (kg)</th></tr></thead>';
+            html += '<tbody>';
+            f.predictions.forEach(row => {
+                html += '<tr><td>' + row.month + '</td><td><b>' + row.predicted_kg + ' kg</b></td></tr>';
+            });
+            html += '</tbody></table>';
         });
-        html += '</tbody></table>';
         document.getElementById('predictionResult').innerHTML = html;
 
-        // Past data
-        const pastLabels = Object.keys(pastData);
-        const pastValues = Object.values(pastData);
+        // Expanded color palette
+        const colorPalette = [
+            '#0d6efd','#198754','#ff5733','#6f42c1',
+            '#fd7e14','#20c997','#e83e8c','#6610f2',
+            '#17a2b8','#ffc107','#8e44ad','#2ecc71',
+            '#d35400','#1abc9c','#c0392b','#34495e'
+        ];
 
-        // Future data
-        const futureLabels = futureData.map(d => d.month);
-        const futureValues = futureData.map(d => d.predicted_kg);
+        // Build datasets for bar chart
+        const datasets = forecasts.map((f, idx) => ({
+            label: f.state,
+            data: f.predictions.map(p => p.predicted_kg),
+            backgroundColor: colorPalette[idx % colorPalette.length]
+        }));
 
-        // Combine labels
-        const allLabels = [...pastLabels, ...futureLabels];
-
-        // Past dataset - fill only past months
-        const pastDataset = allLabels.map((label, i) =>
-            i < pastLabels.length ? pastValues[i] : null
-        );
-
-        // Future dataset - fill only future months
-        const futureDataset = allLabels.map((label, i) =>
-            i >= pastLabels.length ? futureValues[i - pastLabels.length] : null
-        );
-
-        new Chart(document.getElementById('predictionChart'), {
-            type: 'line',
+        // Chart as BAR chart
+        const ctx = document.getElementById('predictionChart');
+        new Chart(ctx, {
+            type: 'bar',
             data: {
-                labels: allLabels,
-                datasets: [
-                    {
-                        label: 'Past Waste (kg)',
-                        data: pastDataset,
-                        borderColor: '#198754',
-                        backgroundColor: 'rgba(25,135,84,0.2)',
-                        tension: 0.4,
-                        fill: true,
-                        pointRadius: 5
-                    },
-                    {
-                        label: 'Predicted Waste (kg)',
-                        data: futureDataset,
-                        borderColor: '#0d6efd',
-                        backgroundColor: 'rgba(13,110,253,0.2)',
-                        tension: 0.4,
-                        fill: true,
-                        borderDash: [5, 5],
-                        pointRadius: 5
-                    }
-                ]
+                labels: forecasts[0].predictions.map(p => p.month),
+                datasets: datasets
             },
             options: {
                 plugins: {
-                    legend: { position: 'top' },
+                    legend: { position: 'top', labels: { font: { size: 14 } } },
                     title: {
                         display: true,
-                        text: 'Past Waste vs Predicted Waste'
+                        text: 'State-wise Predicted Waste (Bar Chart)'
                     }
-                }
+                },
+                responsive: true,
+                maintainAspectRatio: false
             }
         });
     });

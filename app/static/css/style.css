@@ -1,37 +1,40 @@
 /* General */
+/* Default background for all pages */
 body {
-    background-color: #f0f7f0; /* fallback color */
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
-
-/* Background only for home page */
-body.home-page {
     background-image: url("../images/plasticpicture.jpg.png");
     background-size: cover;
     background-repeat: no-repeat;
     background-attachment: fixed;
     background-position: center;
-    animation: fadeIn 2s ease-in-out; /* fade effect */
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-/* Overlay for home page */
-body.home-page::before {
+/* Blurred overlay for all pages except home */
+body::before {
     content: "";
     position: fixed;
-    top: 0; 
+    top: 0;
     left: 0;
-    width: 100%; 
+    width: 100%;
     height: 100%;
-    background: rgba(0,0,0,0.3); /* adjust opacity: 0.2 lighter, 0.5 darker */
-    z-index: -1; /* keeps overlay behind content */
+    background: rgba(0,0,0,0.03); /* dark transparent layer */
+    backdrop-filter: blur(5px);        /* blur effect */
+    z-index: -1;
 }
+
+/* Remove blur overlay on home page */
+body.home-page::before {
+    background: none;
+    backdrop-filter: none;
+}
+
 
 /* Tagline under welcome heading */
 .tagline {
-    color: #000000;   /* solid black */
-    font-weight: bold; /* bold text */
-    font-size: 1.5rem;   /* increase size (default ~1rem) */
-    text-align: center;  /* optional: center it under the heading */
+    color: #000000;
+    font-weight: bold;
+    font-size: 1.5rem;
+    text-align: center;
 }
 
 /* Navbar */
@@ -47,17 +50,16 @@ body.home-page::before {
     letter-spacing: 1px;
 }
 
-/* Cards */
+/* Card hover effect */
 .card {
-    border: none;
-    border-radius: 15px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-    transition: transform 0.2s;
+    transition: transform 0.3s, box-shadow 0.3s;
 }
 
 .card:hover {
-    transform: translateY(-5px);
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.3);
 }
+
 
 /* Buttons */
 .btn-success {
@@ -75,44 +77,58 @@ body.home-page::before {
 }
 
 .btn-outline-success {
+    background: linear-gradient(135deg, #1a7a3c, #2ecc71);
+    color: #fff;
+    border: none;
     border-radius: 25px;
     padding: 10px 25px;
     font-weight: bold;
-    border: 2px solid #1a7a3c;
-    color: #1a7a3c;
+    box-shadow: 0 5px 15px rgba(46,204,113,0.4);
     transition: all 0.3s;
 }
 
 .btn-outline-success:hover {
-    background: linear-gradient(135deg, #1a7a3c, #2ecc71);
     transform: scale(1.05);
+    box-shadow: 0 8px 20px rgba(46,204,113,0.6);
 }
 
-/* Home page */
-.welcome-section {
-    background: transparent; 
-    border-radius: 20px;
-    padding: 60px 40px;
-    box-shadow: none;
-    margin-top: 30px;
+/* Back to Home button styling */
+.btn-back-home {
+    background-color: #198754;   /* solid Bootstrap green */
+    color: #fff;                 /* white text */
+    font-weight: 600;
+    border: none;
+    box-shadow: 0 0 10px rgba(0,0,0,0.6); /* glow against dark background */
+    transition: transform 0.2s, box-shadow 0.2s;
 }
 
-.welcome-section h1 {
-    font-size: 2.5rem;
-    font-weight: bold;
+.btn-back-home:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 15px rgba(0,255,0,0.7); /* brighter glow on hover */
 }
 
 /* Forms */
-.form-control {
+label {
+    color: #000000;
+    font-weight: bold;
+    font-size: 1rem;
+}
+
+.form-control,
+.form-select {
+    background-color: rgba(255,255,255,0.95);
+    color: #000000;
+    border: 2px solid #2ecc71;
     border-radius: 10px;
-    border: 2px solid #d4edda;
     padding: 10px 15px;
+    font-weight: 500;
     transition: all 0.3s;
 }
 
-.form-control:focus {
-    border-color: #2ecc71;
-    box-shadow: 0 0 10px rgba(46,204,113,0.3);
+.form-control:focus,
+.form-select:focus {
+    border-color: #1a7a3c;
+    box-shadow: 0 0 10px rgba(46,204,113,0.4);
 }
 
 /* Tables */
@@ -132,11 +148,17 @@ body.home-page::before {
     background-color: #f0f7f0;
 }
 
+.table tbody td:nth-child(2),
+.table tbody td:nth-child(3) {
+    text-transform: capitalize;
+}
+
 /* Login page */
 .login-card {
     border-radius: 20px;
     box-shadow: 0 10px 30px rgba(0,0,0,0.15);
     padding: 40px;
+    background: rgba(255,255,255,0.85);
 }
 
 /* Dashboard */
@@ -146,6 +168,58 @@ body.home-page::before {
     padding: 20px;
     box-shadow: 0 4px 15px rgba(0,0,0,0.1);
     margin-bottom: 20px;
+}
+
+/* Overlay behind content */
+/* Overlay container for text readability */
+.overlay {
+    background: transparent;        /* remove white background */
+    border-radius: 15px;
+    padding: 30px;
+    box-shadow: none;               /* remove shadow if you don’t want it */
+}
+
+body {
+    -webkit-print-color-adjust: exact; /* force wkhtmltopdf to keep colors */
+    print-color-adjust: exact;
+    background: url("../images/plasticpicture.jpg.png") no-repeat center center fixed;
+    background-size: cover;
+}
+
+
+/* Certificate container background fix */
+.certificate-container {
+    background: rgba(255,255,255,0.85); /* keep semi-transparent white */
+    border: 5px solid green;
+    border-radius: 12px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+}
+
+/* Participant name styling */
+.participant-name {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 30px;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #2c3e50;
+}
+
+/* Signature lines */
+.signature-blocks .signature div {
+    border-top: 1px solid #000;
+    width: 200px;
+    margin: 0 auto;
+}
+.signature-blocks p {
+    margin-top: 8px;
+    font-size: 14px;
+}
+
+
+/* Elegant style for certificate body text */
+.certificate-body {
+    font-family: 'Georgia', serif;  /* more formal look */
+    font-size: 18px;
 }
 
 /* Headings */
@@ -158,10 +232,4 @@ hr {
     border: 2px solid #2ecc71;
     opacity: 1;
     margin-bottom: 25px;
-}
-
-/* Fade-in animation */
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
 }

@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+
+{% block body_class %}certificate-page{% endblock %}
+
+{% block content %}
+<div class="certificate-container" style="
+    border: 5px solid green; 
+    padding: 40px; 
+    margin: 40px auto; 
+    width: 80%; 
+    text-align: center; 
+    font-family: Arial, sans-serif; 
+    background: rgba(255,255,255,0.85); 
+    border-radius: 12px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+">
+    <!-- Header with logos -->
+    <div class="certificate-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <img src="{{ url_for('static', filename='images/nss_logo.png') }}" alt="NSS Logo" style="height: 80px;">
+        <h2 class="certificate-title" style="flex-grow: 1; text-align: center; font-size: 28px; font-weight: bold;">CERTIFICATE OF PARTICIPATION</h2>
+        <img src="{{ url_for('static', filename='images/college_logo.png') }}" alt="College Logo" style="height: 80px;">
+    </div>
+
+    <!-- Certificate Body -->
+    <div class="certificate-body" style="margin-top: 30px; font-size: 18px; font-family: Georgia, serif;">
+        <p>This certificate is proudly presented to</p>
+        <h3 class="participant-name" style="
+            font-family: 'Montserrat', sans-serif; 
+            font-size: 30px; 
+            font-weight: 700; 
+            text-transform: uppercase; 
+            margin: 15px 0; 
+            color: #2c3e50;">
+            {{ volunteer.name|upper }}
+        </h3>
+        <p>
+            for actively participating in the <b>Plastic Clean‑Up Drive</b><br>
+            organized on <b>{{ volunteer.joined_date.strftime('%d %B %Y') }}</b> as part of the<br>
+            <b>"E‑Plastic Management System"</b> initiative.
+        </p>
+    </div>
+
+    <!-- Footer with signatures -->
+    <div class="certificate-footer" style="margin-top: 40px; font-size: 16px;">
+        <p>Date: {{ volunteer.joined_date.strftime('%d %B %Y') }}</p>
+        <div class="signature-blocks" style="display: flex; justify-content: space-around; margin-top: 60px; text-align: center;">
+            <div class="signature">
+                <div style="border-top: 1px solid #000; width: 200px; margin: 0 auto;"></div>
+                <p style="margin-top: 8px;">Project Coordinator / NSS Officer</p>
+            </div>
+            <div class="signature">
+                <div style="border-top: 1px solid #000; width: 200px; margin: 0 auto;"></div>
+                <p style="margin-top: 8px;">Head of Department</p>
+            </div>
+            <div class="signature">
+                <div style="border-top: 1px solid #000; width: 200px; margin: 0 auto;"></div>
+                <p style="margin-top: 8px;">Principal</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Buttons -->
+<div class="page-actions" style="margin-top: 30px; text-align: left;">
+    <a href="{{ url_for('data.index') }}" class="btn btn-success btn-lg">Back to Home</a>
+    <a href="{{ url_for('nss.download_certificate', id=volunteer.id) }}" class="btn btn-primary btn-lg">⬇ Download Certificate</a>
+</div>
+{% endblock %}

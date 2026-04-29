@@ -52,7 +52,7 @@
                     📝 Register
                 </a>
                 {% if current_user.is_admin() %}
-                <a href="/events/registrations/{{ event.id }}" class="btn btn-outline-success btn-sm">
+                <a href="/events/registrations/{{ event.id }}" class="btn btn-success btn-lg-sm">
                     👥 View Registrations
                 </a>
                 {% endif %}
@@ -65,7 +65,7 @@
     {% endfor %}
 </div>
 
-<a href="/" class="btn btn-outline-success mt-3">Back to Home</a>
+<a href="/" class="btn btn-success btn-lg">Back to Home</a>
 
 <script>
 function addEvent() {

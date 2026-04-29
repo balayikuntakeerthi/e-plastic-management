@@ -11,7 +11,7 @@
 
 <!-- Add Team Form -->
 <div id="addTeamForm" style="display:none;" class="card p-4 mb-4">
-    <h5>Add New Team</h5>
+    <h5>Add New NSS Team</h5>
     <div class="mb-3">
         <label class="form-label">Team Name</label>
         <input type="text" id="team_name" class="form-control" placeholder="Team name">
@@ -42,7 +42,6 @@
             <th>Team Leader</th>
             <th>Location</th>
             <th>Status</th>
-            <th>Delete</th>
         </tr>
     </thead>
     <tbody>
@@ -67,22 +66,13 @@
                     <span class="text-muted">Admin only</span>
                 {% endif %}
             </td>
-            <td>
-                {% if current_user.is_admin %}
-                    <form action="{{ url_for('nss.delete_team', id=team.id) }}" method="post" style="display:inline;">
-                        <button class="btn btn-danger btn-sm">Delete</button>
-                    </form>
-                {% else %}
-                    <span class="text-muted">Admin only</span>
-                {% endif %}
-            </td>
         </tr>
         {% endfor %}
     </tbody>
 </table>
 
 <!-- Back to Home -->
-<a href="/" class="btn btn-outline-success">Back to Home</a>
+<a href="/" class="btn btn-success btn-lg">Back to Home</a>
 
 <script>
 function addTeam() {

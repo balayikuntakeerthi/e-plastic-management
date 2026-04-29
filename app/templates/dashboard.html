@@ -34,24 +34,12 @@
     </div>
 </div>
 
-<!-- ✅ New chart for collected waste -->
-<div class="row mt-4">
-    <div class="col-md-12">
-        <div class="chart-card">
-            <h5 class="text-center">Total Wastage Collected</h5>
-            <canvas id="collectedChart"></canvas>
-        </div>
-    </div>
-</div>
-
 <!-- Back to Home button aligned left -->
 <div class="mt-4 text-start">
-    <a href="/" class="btn btn-outline-success">Back to Home</a>
+    <a href="/" class="btn btn-success btn-lg">Back to Home</a>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<!-- ✅ Add Chart.js Data Labels plugin -->
-<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
 
 <script>
     fetch('/api/waste-by-location')
@@ -120,74 +108,6 @@
                     backgroundColor: ['#198754', '#dc3545']
                 }]
             }
-        });
-    });
-
-    // ✅ Styled chart for collected waste with data labels
-    fetch('/api/waste-collected')
-    .then(res => res.json())
-    .then(data => {
-        new Chart(document.getElementById('collectedChart'), {
-            type: 'bar',
-            data: {
-                labels: Object.keys(data),
-                datasets: [{
-                    label: 'Collected Waste (kg)',
-                    data: Object.values(data),
-                    backgroundColor: [
-                        'rgba(13,110,253,0.7)',   // blue
-                        'rgba(25,135,84,0.7)',   // green
-                        'rgba(255,193,7,0.7)',   // yellow
-                        'rgba(220,53,69,0.7)'    // red
-                    ],
-                    borderColor: [
-                        '#0d6efd',
-                        '#198754',
-                        '#ffc107',
-                        '#dc3545'
-                    ],
-                    borderWidth: 2,
-                    hoverBackgroundColor: 'rgba(108,117,125,0.8)',
-                    hoverBorderColor: '#343a40'
-                }]
-            },
-            options: {
-                plugins: {
-                    legend: { position: 'top' },
-                    title: {
-                        display: true,
-                        text: 'Total Wastage Collected (Monthly)'
-                    },
-                    // ✅ Enable data labels
-                    datalabels: {
-                        anchor: 'end',
-                        align: 'top',
-                        color: '#343a40',
-                        font: {
-                            weight: 'bold'
-                        },
-                        formatter: function(value) {
-                            return value + ' kg';
-                        }
-                    }
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        ticks: {
-                            color: '#198754',
-                            font: { weight: 'bold' }
-                        }
-                    },
-                    x: {
-                        ticks: {
-                            color: '#0d6efd',
-                            font: { weight: 'bold' }
-                        }
-                    }
-                }
-            },
-            plugins: [ChartDataLabels] // ✅ Register plugin
         });
     });
 </script>

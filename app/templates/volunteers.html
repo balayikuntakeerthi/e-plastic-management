@@ -26,7 +26,7 @@
     </div>
     <div class="mb-3">
         <label class="form-label">NSS Team</label>
-        <select id="vol_team" class="form-control" required>
+        <select id="vol_team" class="form-select" required>
             <option value="">Select Team</option>
             {% for team in teams %}
             <option value="{{ team.id }}">{{ team.team_name }}</option>
@@ -35,10 +35,9 @@
     </div>
     <div class="mb-3">
         <label class="form-label">Joined Date</label>
-        <!-- ✅ keep type="date" so browser sends YYYY-MM-DD -->
         <input type="date" id="vol_date" class="form-control" required>
     </div>
-    <button class="btn btn-success" onclick="addVolunteer()">Save Volunteer</button>
+    <button class="btn btn-success btn-lg" onclick="addVolunteer()">Save Volunteer</button>
     <button class="btn btn-secondary ms-2" onclick="document.getElementById('addVolunteerForm').style.display='none'">Cancel</button>
 </div>
 
@@ -66,6 +65,13 @@
             <td>{{ volunteer.joined_date }}</td>
             <td>
                 {% if current_user.is_admin %}
+                    <!-- Edit button -->
+                    <a href="{{ url_for('nss.edit_volunteer', id=volunteer.id) }}" class="btn btn-primary btn-sm me-2">Edit</a>
+                    
+                    <!-- Certificate button -->
+                    <a href="{{ url_for('nss.generate_certificate', id=volunteer.id) }}" class="btn btn-warning btn-sm me-2">Certificate</a>
+                    
+                    <!-- Delete button -->
                     <form action="{{ url_for('nss.delete_volunteer', id=volunteer.id) }}" method="post" style="display:inline;">
                         <button class="btn btn-danger btn-sm">Delete</button>
                     </form>
@@ -79,7 +85,7 @@
 </table>
 
 <!-- Back to Home -->
-<a href="/" class="btn btn-outline-success">Back to Home</a>
+<a href="{{ url_for('nss.nss_teams') }}" class="btn btn-success btn-lg">Back to Home</a>
 
 <script>
 function addVolunteer() {
@@ -88,7 +94,7 @@ function addVolunteer() {
         email: document.getElementById('vol_email').value.trim(),
         phone: document.getElementById('vol_phone').value.trim(),
         team_id: document.getElementById('vol_team').value,
-        joined_date: document.getElementById('vol_date').value   // ✅ always YYYY-MM-DD
+        joined_date: document.getElementById('vol_date').value
     };
 
     fetch('/api/add-volunteer', {

@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2 class="text-success">Edit Volunteer</h2>
+<hr>
+
+<form method="POST">
+    <div class="mb-3">
+        <label class="form-label">Name</label>
+        <input type="text" name="name" class="form-control" value="{{ volunteer.name }}" required>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Email</label>
+        <input type="email" name="email" class="form-control" value="{{ volunteer.email }}" required>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Phone</label>
+        <input type="text" name="phone" class="form-control" value="{{ volunteer.phone }}" required>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">NSS Team</label>
+        <select name="team_id" class="form-control" required>
+            {% for team in teams %}
+            <option value="{{ team.id }}" {% if volunteer.team_id == team.id %}selected{% endif %}>
+                {{ team.team_name }}
+            </option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Joined Date</label>
+        <input type="date" name="joined_date" class="form-control" value="{{ volunteer.joined_date }}" required>
+    </div>
+    <button type="submit" class="btn btn-success">Update Volunteer</button>
+    <a href="{{ url_for('nss.volunteers') }}" class="btn btn-secondary ms-2">Cancel</a>
+</form>
+{% endblock %}
