@@ -12,18 +12,22 @@
 <!-- Add Volunteer Form -->
 <div id="addVolunteerForm" style="display:none;" class="card p-4 mb-4">
     <h5>Add New Volunteer</h5>
+
     <div class="mb-3">
         <label class="form-label">Name</label>
         <input type="text" id="vol_name" class="form-control" placeholder="Volunteer name" required>
     </div>
+
     <div class="mb-3">
         <label class="form-label">Email</label>
         <input type="email" id="vol_email" class="form-control" placeholder="Email address" required>
     </div>
+
     <div class="mb-3">
         <label class="form-label">Phone</label>
         <input type="text" id="vol_phone" class="form-control" placeholder="Phone number" required>
     </div>
+
     <div class="mb-3">
         <label class="form-label">NSS Team</label>
         <select id="vol_team" class="form-select" required>
@@ -33,10 +37,28 @@
             {% endfor %}
         </select>
     </div>
+
     <div class="mb-3">
         <label class="form-label">Joined Date</label>
         <input type="date" id="vol_date" class="form-control" required>
     </div>
+
+    <!-- ✅ NEW FIELDS -->
+    <div class="mb-3">
+        <label class="form-label">Contribution Type</label>
+        <input type="text" id="vol_contribution" class="form-control" placeholder="e.g. Plastic Clean-Up Drive">
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Hours Worked</label>
+        <input type="number" id="vol_hours" class="form-control" placeholder="e.g. 5">
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Impact</label>
+        <input type="text" id="vol_impact" class="form-control" placeholder="e.g. Collected 3kg plastic">
+    </div>
+
     <button class="btn btn-success btn-lg" onclick="addVolunteer()">Save Volunteer</button>
     <button class="btn btn-secondary ms-2" onclick="document.getElementById('addVolunteerForm').style.display='none'">Cancel</button>
 </div>
@@ -45,33 +67,34 @@
 <table class="table table-bordered table-hover">
     <thead class="table-success">
         <tr>
-            <th>ID</th>
+            <th>No.</th>
             <th>Name</th>
             <th>Email</th>
             <th>Phone</th>
             <th>Team</th>
             <th>Joined Date</th>
+            <th>Contribution Type</th>
+            <th>Hours Worked</th>
+            <th>Impact</th>
             <th>Actions</th>
         </tr>
     </thead>
     <tbody>
         {% for volunteer in volunteers %}
         <tr id="vol-row-{{ volunteer.id }}">
-            <td>{{ volunteer.id }}</td>
+            <td>{{ loop.index }}</td>
             <td>{{ volunteer.name }}</td>
             <td>{{ volunteer.email }}</td>
             <td>{{ volunteer.phone }}</td>
             <td>{{ volunteer.team.team_name if volunteer.team else 'No Team' }}</td>
             <td>{{ volunteer.joined_date }}</td>
+            <td>{{ volunteer.contribution_type }}</td>
+            <td>{{ volunteer.hours_worked }}</td>
+            <td>{{ volunteer.impact }}</td>
             <td>
                 {% if current_user.is_admin %}
-                    <!-- Edit button -->
                     <a href="{{ url_for('nss.edit_volunteer', id=volunteer.id) }}" class="btn btn-primary btn-sm me-2">Edit</a>
-                    
-                    <!-- Certificate button -->
                     <a href="{{ url_for('nss.generate_certificate', id=volunteer.id) }}" class="btn btn-warning btn-sm me-2">Certificate</a>
-                    
-                    <!-- Delete button -->
                     <form action="{{ url_for('nss.delete_volunteer', id=volunteer.id) }}" method="post" style="display:inline;">
                         <button class="btn btn-danger btn-sm">Delete</button>
                     </form>
@@ -94,7 +117,12 @@ function addVolunteer() {
         email: document.getElementById('vol_email').value.trim(),
         phone: document.getElementById('vol_phone').value.trim(),
         team_id: document.getElementById('vol_team').value,
-        joined_date: document.getElementById('vol_date').value
+        joined_date: document.getElementById('vol_date').value,
+
+        // ✅ NEW FIELDS
+        contribution_type: document.getElementById('vol_contribution').value.trim(),
+        hours_worked: document.getElementById('vol_hours').value,
+        impact: document.getElementById('vol_impact').value.trim()
     };
 
     fetch('/api/add-volunteer', {
@@ -115,4 +143,5 @@ function addVolunteer() {
     });
 }
 </script>
+
 {% endblock %}

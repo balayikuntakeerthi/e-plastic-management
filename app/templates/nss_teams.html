@@ -37,7 +37,7 @@
 <table class="table table-bordered table-hover">
     <thead class="table-success">
         <tr>
-            <th>ID</th>
+            <th>No.</th>
             <th>Team Name</th>
             <th>Team Leader</th>
             <th>Location</th>
@@ -47,7 +47,7 @@
     <tbody>
         {% for team in teams %}
         <tr id="team-row-{{ team.id }}">
-            <td>{{ team.id }}</td>
+            <td>{{ loop.index }}</td>
             <td>{{ team.team_name }}</td>
             <td>{{ team.team_leader }}</td>
             <td>{{ team.location.name if team.location else 'No Location' }}</td>

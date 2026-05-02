@@ -57,7 +57,9 @@ class Volunteer(db.Model):
     task_assigned = db.Column(db.String(200), nullable=True)  # optional
     task_completed = db.Column(db.Boolean, default=False)
     enabled = db.Column(db.Boolean, default=True)
-
+    contribution_type = db.Column(db.String(100))   # what work
+    hours_worked = db.Column(db.Integer)            # hours spent
+    impact = db.Column(db.String(200))              # result/impact
 
 class WasteRecord(db.Model):
     __tablename__ = 'waste_records'

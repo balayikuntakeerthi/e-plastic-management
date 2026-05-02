@@ -12,7 +12,7 @@
 <table class="table table-bordered table-hover">
     <thead class="table-success">
         <tr>
-            <th>ID</th>
+            <th>No.</th>
             <th>Name</th>
             <th>Email</th>
             <th>Phone</th>
@@ -23,7 +23,7 @@
     <tbody>
         {% for reg in registrations %}
         <tr>
-            <td>{{ reg.id }}</td>
+            <td>{{ loop.index }}</td>
             <td>{{ reg.name }}</td>
             <td>{{ reg.email }}</td>
             <td>{{ reg.phone }}</td>

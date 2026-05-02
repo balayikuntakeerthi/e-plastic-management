@@ -92,6 +92,9 @@ def add_volunteer():
             phone=data['phone'],
             team_id=int(data['team_id']) if data['team_id'] else None,
             joined_date=parse_date(data['joined_date']),
+            contribution_type=data.get('contribution_type'),
+            hours_worked=int(data.get('hours_worked', 0)),
+            impact=data.get('impact'),
             task_completed=False,
             enabled=True
         )

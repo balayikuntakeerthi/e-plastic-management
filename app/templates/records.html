@@ -6,7 +6,7 @@
 <table class="table table-bordered table-hover">
     <thead class="table-success">
         <tr>
-            <th>ID</th>
+            <th>No.</th>
             <th>Location</th>
             <th>Plastic Type</th>
             <th>Quantity (kg)</th>
@@ -18,7 +18,7 @@
     <tbody>
         {% for record, location, plastic_type in records %}
         <tr id="row-{{ record.id }}">
-            <td>{{ record.id }}</td>
+            <td>{{ loop.index }}</td>
             <td>{{ location }}</td>
             <td>{{ plastic_type }}</td>
             <td id="qty-{{ record.id }}">{{ record.quantity_kg }}</td>
