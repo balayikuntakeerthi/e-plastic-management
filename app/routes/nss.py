@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, jsonify, redirect, url_for, flash, make_response
+﻿from flask import Blueprint, render_template, request, jsonify, redirect, url_for, flash, make_response
 from flask_login import login_required, current_user
 from app import db
 from app.models import NSSTeam, Volunteer, Location
@@ -48,7 +48,7 @@ def add_team():
 @nss_bp.route('/delete_team/<int:id>', methods=['POST'])
 @login_required
 def delete_team(id):
-    if not current_user.is_admin:
+    if not current_user.is_admin():
         flash("Only admins can delete teams")
         return redirect(url_for('nss.nss_teams'))
 
@@ -62,7 +62,7 @@ def delete_team(id):
 @nss_bp.route('/toggle_team/<int:team_id>/<int:status>', methods=['POST'])
 @login_required
 def toggle_team(team_id, status):
-    if not current_user.is_admin:
+    if not current_user.is_admin():
         flash("Only admins can enable/disable teams")
         return redirect(url_for('nss.nss_teams'))
 
@@ -109,7 +109,7 @@ def add_volunteer():
 @nss_bp.route('/delete_volunteer/<int:id>', methods=['POST'])
 @login_required
 def delete_volunteer(id):
-    if not current_user.is_admin:
+    if not current_user.is_admin():
         flash("Only admins can delete volunteers")
         return redirect(url_for('nss.volunteers'))
 
@@ -123,7 +123,7 @@ def delete_volunteer(id):
 @nss_bp.route('/edit_volunteer/<int:id>', methods=['GET', 'POST'])
 @login_required
 def edit_volunteer(id):
-    if not current_user.is_admin:
+    if not current_user.is_admin():
         flash("Only admins can edit volunteers")
         return redirect(url_for('nss.volunteers'))
 
@@ -146,10 +146,6 @@ def edit_volunteer(id):
 @nss_bp.route('/certificate/<int:id>')
 @login_required
 def generate_certificate(id):
-    if not current_user.is_admin:
-        flash("Only admins can generate certificates")
-        return redirect(url_for('nss.volunteers'))
-
     volunteer = Volunteer.query.get_or_404(id)
     return render_template('certificate.html', volunteer=volunteer)
 
@@ -157,12 +153,8 @@ def generate_certificate(id):
 @nss_bp.route('/download_certificate/<int:id>')
 @login_required
 def download_certificate(id):
-    if not current_user.is_admin:
-        flash("Only admins can download certificates")
-        return redirect(url_for('nss.volunteers'))
-
     volunteer = Volunteer.query.get_or_404(id)
-    html = render_template('certificate.html', volunteer=volunteer)
+    html = render_template('certificate_pdf.html', volunteer=volunteer)
 
     # ✅ Options to allow local file access and render background images
     options = {

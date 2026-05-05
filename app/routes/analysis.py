@@ -1,6 +1,6 @@
 from flask import Blueprint, jsonify, render_template
 from app import db
-from app.models import WasteRecord, Location, PlasticType
+from app.models import WasteRecord, Location, PlasticType, Volunteer, NSSTeam
 from sqlalchemy import func
 
 analysis_bp = Blueprint('analysis', __name__)
@@ -8,7 +8,14 @@ analysis_bp = Blueprint('analysis', __name__)
 # Dashboard page
 @analysis_bp.route('/dashboard')
 def dashboard():
-    return render_template('dashboard.html')
+    volunteer_count = db.session.query(func.count(Volunteer.id)).scalar() or 0
+    team_count = db.session.query(func.count(NSSTeam.id)).scalar() or 0
+    total_waste = db.session.query(func.sum(WasteRecord.quantity_kg)).scalar() or 0
+    return render_template('dashboard.html', stats={
+        'volunteers': volunteer_count,
+        'teams': team_count,
+        'waste': float(total_waste)
+    })
 
 # Waste by Location
 @analysis_bp.route('/api/waste-by-location')

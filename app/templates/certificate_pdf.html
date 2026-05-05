@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .certificate {
+            display: inline-block;
+            text-align: left;
+            border: 5px solid green;
+            padding: 40px;
+            width: 90%;
+            max-width: 1100px;
+            margin: 0 auto;
+            border-radius: 12px;
+            box-sizing: border-box;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header img {
+            height: 90px;
+        }
+
+        h2 {
+            flex-grow: 1;
+        }
+
+        .content {
+            margin-top: 30px;
+            font-size: 18px;
+            font-family: Georgia, serif;
+        }
+
+        .name {
+            font-size: 30px;
+            font-weight: bold;
+        }
+
+        .signatures {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 60px;
+        }
+
+        .signatures div {
+            width: 30%;
+            text-align: center;
+        }
+
+        .line {
+            border-top: 1px solid black;
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="certificate">
+
+    <div class="header">
+        <img src="{{ url_for('static', filename='images/nss_logo.png') }}">
+        <h2>CERTIFICATE OF PARTICIPATION</h2>
+        <img src="{{ url_for('static', filename='images/college_logo.png') }}">
+    </div>
+
+    <div class="content">
+        <p>This certificate is proudly presented to</p>
+
+        <div class="name">{{ volunteer.name|upper }}</div>
+
+        <p>
+            for actively participating in the <b>Plastic Clean-Up Drive</b><br>
+            organized on <b>{{ volunteer.joined_date.strftime('%d %B %Y') }}</b><br>
+            as part of the <b>"E-Plastic Management System"</b> initiative.
+        </p>
+
+        <p>Date: {{ volunteer.joined_date.strftime('%d %B %Y') }}</p>
+    </div>
+
+    <div class="signatures">
+        <div>
+            <div class="line"></div>
+            Project Coordinator / NSS Officer
+        </div>
+
+        <div>
+            <div class="line"></div>
+            Head of Department
+        </div>
+
+        <div>
+            <div class="line"></div>
+            Principal
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>

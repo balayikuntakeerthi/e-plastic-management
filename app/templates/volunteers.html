@@ -5,62 +5,65 @@
 <hr>
 
 <!-- Add New Volunteer Button -->
-<button class="btn btn-success mb-3" onclick="document.getElementById('addVolunteerForm').style.display='block'">
+<button type="button" class="btn btn-success mb-3" data-bs-toggle="modal" data-bs-target="#addVolunteerModal">
     + Add New Volunteer
 </button>
 
-<!-- Add Volunteer Form -->
-<div id="addVolunteerForm" style="display:none;" class="card p-4 mb-4">
-    <h5>Add New Volunteer</h5>
-
-    <div class="mb-3">
-        <label class="form-label">Name</label>
-        <input type="text" id="vol_name" class="form-control" placeholder="Volunteer name" required>
+<!-- Add Volunteer Modal -->
+<div class="modal fade" id="addVolunteerModal" tabindex="-1" aria-labelledby="addVolunteerModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addVolunteerModalLabel">Add New Volunteer</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label">Name</label>
+                        <input type="text" id="vol_name" class="form-control" placeholder="Volunteer name" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Email</label>
+                        <input type="email" id="vol_email" class="form-control" placeholder="Email address" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Phone</label>
+                        <input type="text" id="vol_phone" class="form-control" placeholder="Phone number" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">NSS Team</label>
+                        <select id="vol_team" class="form-select" required>
+                            <option value="">Select Team</option>
+                            {% for team in teams %}
+                            <option value="{{ team.id }}">{{ team.team_name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Joined Date</label>
+                        <input type="date" id="vol_date" class="form-control" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Contribution Type</label>
+                        <input type="text" id="vol_contribution" class="form-control" placeholder="e.g. Plastic Clean-Up Drive">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Hours Worked</label>
+                        <input type="number" id="vol_hours" class="form-control" placeholder="e.g. 5">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Impact</label>
+                        <input type="text" id="vol_impact" class="form-control" placeholder="e.g. Collected 3kg plastic">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-success" onclick="addVolunteer()">Save Volunteer</button>
+            </div>
+        </div>
     </div>
-
-    <div class="mb-3">
-        <label class="form-label">Email</label>
-        <input type="email" id="vol_email" class="form-control" placeholder="Email address" required>
-    </div>
-
-    <div class="mb-3">
-        <label class="form-label">Phone</label>
-        <input type="text" id="vol_phone" class="form-control" placeholder="Phone number" required>
-    </div>
-
-    <div class="mb-3">
-        <label class="form-label">NSS Team</label>
-        <select id="vol_team" class="form-select" required>
-            <option value="">Select Team</option>
-            {% for team in teams %}
-            <option value="{{ team.id }}">{{ team.team_name }}</option>
-            {% endfor %}
-        </select>
-    </div>
-
-    <div class="mb-3">
-        <label class="form-label">Joined Date</label>
-        <input type="date" id="vol_date" class="form-control" required>
-    </div>
-
-    <!-- ✅ NEW FIELDS -->
-    <div class="mb-3">
-        <label class="form-label">Contribution Type</label>
-        <input type="text" id="vol_contribution" class="form-control" placeholder="e.g. Plastic Clean-Up Drive">
-    </div>
-
-    <div class="mb-3">
-        <label class="form-label">Hours Worked</label>
-        <input type="number" id="vol_hours" class="form-control" placeholder="e.g. 5">
-    </div>
-
-    <div class="mb-3">
-        <label class="form-label">Impact</label>
-        <input type="text" id="vol_impact" class="form-control" placeholder="e.g. Collected 3kg plastic">
-    </div>
-
-    <button class="btn btn-success btn-lg" onclick="addVolunteer()">Save Volunteer</button>
-    <button class="btn btn-secondary ms-2" onclick="document.getElementById('addVolunteerForm').style.display='none'">Cancel</button>
 </div>
 
 <!-- Volunteers Table -->
@@ -92,14 +95,14 @@
             <td>{{ volunteer.hours_worked }}</td>
             <td>{{ volunteer.impact }}</td>
             <td>
-                {% if current_user.is_admin %}
+                {% if current_user.is_admin() %}
                     <a href="{{ url_for('nss.edit_volunteer', id=volunteer.id) }}" class="btn btn-primary btn-sm me-2">Edit</a>
                     <a href="{{ url_for('nss.generate_certificate', id=volunteer.id) }}" class="btn btn-warning btn-sm me-2">Certificate</a>
                     <form action="{{ url_for('nss.delete_volunteer', id=volunteer.id) }}" method="post" style="display:inline;">
                         <button class="btn btn-danger btn-sm">Delete</button>
                     </form>
                 {% else %}
-                    <span class="text-muted">Admin only</span>
+                    <a href="{{ url_for('nss.generate_certificate', id=volunteer.id) }}" class="btn btn-warning btn-sm">Certificate</a>
                 {% endif %}
             </td>
         </tr>

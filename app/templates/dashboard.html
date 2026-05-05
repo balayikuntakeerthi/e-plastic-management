@@ -4,6 +4,42 @@
 <h2 class="text-success">Waste Management Dashboard</h2>
 <hr>
 
+<div class="row g-3">
+    <div class="col-md-4">
+        <div class="card summary-card p-3">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h6 class="text-muted">Total Volunteers</h6>
+                    <h2>{{ stats.volunteers }}</h2>
+                </div>
+                <div class="fs-1 text-success">👥</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card summary-card p-3">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h6 class="text-muted">NSS Teams</h6>
+                    <h2>{{ stats.teams }}</h2>
+                </div>
+                <div class="fs-1 text-success">🏷️</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card summary-card p-3">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h6 class="text-muted">Total Waste</h6>
+                    <h2>{{ stats.waste|round(2) }} kg</h2>
+                </div>
+                <div class="fs-1 text-success">♻️</div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="row mt-4">
     <div class="col-md-6">
         <div class="chart-card">

@@ -5,32 +5,43 @@
 <hr>
 
 <!-- Add New Team Button -->
-<button class="btn btn-success mb-3" onclick="document.getElementById('addTeamForm').style.display='block'">
+<button type="button" class="btn btn-success mb-3" data-bs-toggle="modal" data-bs-target="#addTeamModal">
     + Add New Team
 </button>
 
-<!-- Add Team Form -->
-<div id="addTeamForm" style="display:none;" class="card p-4 mb-4">
-    <h5>Add New NSS Team</h5>
-    <div class="mb-3">
-        <label class="form-label">Team Name</label>
-        <input type="text" id="team_name" class="form-control" placeholder="Team name">
+<!-- Add Team Modal -->
+<div class="modal fade" id="addTeamModal" tabindex="-1" aria-labelledby="addTeamModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addTeamModalLabel">Add New NSS Team</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label class="form-label">Team Name</label>
+                    <input type="text" id="team_name" class="form-control" placeholder="Team name">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Team Leader</label>
+                    <input type="text" id="team_leader" class="form-control" placeholder="Team leader">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Location</label>
+                    <select id="team_location" class="form-control">
+                        <option value="">Select Location</option>
+                        {% for location in locations %}
+                        <option value="{{ location.id }}">{{ location.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-success" onclick="addTeam()">Save Team</button>
+            </div>
+        </div>
     </div>
-    <div class="mb-3">
-        <label class="form-label">Team Leader</label>
-        <input type="text" id="team_leader" class="form-control" placeholder="Team leader">
-    </div>
-    <div class="mb-3">
-        <label class="form-label">Location</label>
-        <select id="team_location" class="form-control">
-            <option value="">Select Location</option>
-            {% for location in locations %}
-            <option value="{{ location.id }}">{{ location.name }}</option>
-            {% endfor %}
-        </select>
-    </div>
-    <button class="btn btn-success" onclick="addTeam()">Save Team</button>
-    <button class="btn btn-secondary ms-2" onclick="document.getElementById('addTeamForm').style.display='none'">Cancel</button>
 </div>
 
 <!-- Teams Table -->
@@ -52,7 +63,7 @@
             <td>{{ team.team_leader }}</td>
             <td>{{ team.location.name if team.location else 'No Location' }}</td>
             <td>
-                {% if current_user.is_admin %}
+                {% if current_user.is_admin() %}
                     {% if team.enabled %}
                         <form action="{{ url_for('nss.toggle_team', team_id=team.id, status=0) }}" method="post" style="display:inline;">
                             <button class="btn btn-warning btn-sm">Disable</button>

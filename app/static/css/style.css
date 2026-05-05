@@ -60,6 +60,15 @@ body.home-page::before {
     box-shadow: 0 8px 25px rgba(0,0,0,0.3);
 }
 
+.summary-card {
+    background: #ffffff;
+    border: 1px solid rgba(0,0,0,0.08);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+}
+
+.footer {
+    border-top: 1px solid rgba(0,0,0,0.08);
+}
 
 /* Buttons */
 .btn-success {

@@ -4,32 +4,102 @@
 
 {% block content %}
 
-<div style="
+<style>
+/* ✅ PRINT ONLY CERTIFICATE */
+@media print {
+    html, body {
+        background: white !important;
+        color-adjust: exact;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    body::before,
+    .no-print,
+    .navbar {
+        display: none !important;
+        visibility: hidden !important;
+    }
+
+    body * {
+        visibility: hidden;
+    }
+
+    .container,
+    #certificate,
+    #certificate * {
+        visibility: visible;
+    }
+
+    #certificate {
+        position: center;
+        left: 0;
+        top: 0;
+        width: 100%;
+        margin: 0;
+        box-shadow: none;
+        background: white !important;
+    }
+
+    @page {
+        margin: 0;
+    }
+}
+
+/* ✅ SIGNATURE ALIGNMENT */
+.signatures {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 60px;
+    text-align: center;
+}
+
+.signatures div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 30%;
+    gap: 8px;
+}
+
+.signatures .line {
+    border-top: 1px solid black;
+    width: 180px;
+    margin-bottom: 0;
+}
+
+.signatures p {
+    margin: 0;
+    font-size: 14px;
+}
+</style>
+
+<!-- ✅ CERTIFICATE -->
+<div id="certificate" style="
     border: 5px solid green; 
     padding: 40px; 
     margin: 40px auto; 
     width: 80%; 
     text-align: center; 
     font-family: Arial, sans-serif; 
-    background: rgba(255,255,255,0.9); 
+    background: rgba(255,255,255,0.95); 
     border-radius: 12px;
     box-shadow: 0 6px 20px rgba(0,0,0,0.25);
 ">
 
     <!-- HEADER -->
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+    <div style="display: flex; justify-content: space-between; align-items: center;">
         
-        <!-- NSS Logo -->
-        <img src="{{ url_for('static', filename='images/nss_logo.png', _external=True) }}" 
-             style="height: 110px;">
+        <img src="{{ url_for('static', filename='images/nss_logo.png') }}" 
+             style="height: 100px;">
 
-        <!-- TITLE -->
         <h2 style="flex-grow: 1; text-align: center; font-size: 28px; font-weight: bold;">
             CERTIFICATE OF PARTICIPATION
         </h2>
 
-        <!-- College Logo -->
-        <img src="{{ url_for('static', filename='images/college_logo.png', _external=True) }}" 
+        <img src="{{ url_for('static', filename='images/college_logo.png') }}" 
              style="height: 80px;">
     </div>
 
@@ -37,7 +107,7 @@
     <div style="margin-top: 30px; font-size: 18px; font-family: Georgia, serif;">
         <p>This certificate is proudly presented to</p>
 
-        <h3 style="font-size: 30px; font-weight: bold; text-transform: uppercase;">
+        <h3 style="font-size: 30px; font-weight: bold;">
             {{ volunteer.name|upper }}
         </h3>
 
@@ -52,28 +122,38 @@
     <div style="margin-top: 40px;">
         <p>Date: {{ volunteer.joined_date.strftime('%d %B %Y') }}</p>
 
-        <div style="display: flex; justify-content: space-around; margin-top: 60px;">
+        <div class="signatures">
             <div>
-                <div style="border-top: 1px solid black; width: 200px;"></div>
+                <div class="line"></div>
                 <p>Project Coordinator / NSS Officer</p>
             </div>
+
             <div>
-                <div style="border-top: 1px solid black; width: 200px;"></div>
+                <div class="line"></div>
                 <p>Head of Department</p>
             </div>
+
             <div>
-                <div style="border-top: 1px solid black; width: 200px;"></div>
+                <div class="line"></div>
                 <p>Principal</p>
             </div>
         </div>
     </div>
+
 </div>
 
-<div style="margin-top: 30px;">
-    <a href="{{ url_for('data.index') }}" class="btn btn-success">Back to Home</a>
-    <a href="{{ url_for('nss.download_certificate', id=volunteer.id) }}" class="btn btn-primary">
-        Download Certificate
+<!-- ✅ BUTTONS (HIDDEN IN PRINT) -->
+<div class="no-print" style="margin-top: 30px; text-align:center;">
+    
+    <a href="{{ url_for('data.index') }}" class="btn btn-success">
+        Back to Home
     </a>
+
+    <!-- PRINT BUTTON -->
+    <button onclick="window.print()" class="btn btn-primary">
+        Print / Download Certificate
+    </button>
+
 </div>
 
 {% endblock %}
