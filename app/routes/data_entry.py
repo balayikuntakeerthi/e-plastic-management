@@ -68,5 +68,3 @@ def edit_record(id):
         db.session.commit()
         return jsonify({'message': 'Record updated successfully!'})
     return jsonify({'message': 'Record not found!'})
-
-
