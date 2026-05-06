@@ -3,6 +3,7 @@ from flask_login import login_required, current_user
 from app import db
 from app.models import WasteRecord, Location, PlasticType
 from datetime import datetime
+from decimal import Decimal
 
 data_bp = Blueprint('data', __name__)
 
@@ -22,16 +23,22 @@ def entry():
 @login_required
 def add_record():
     data = request.json
-    record = WasteRecord(
-        location_id=data['location_id'],
-        plastic_type_id=data['plastic_type_id'],
-        quantity_kg=data['quantity_kg'],
-        recorded_date=datetime.strptime(data['date'], '%Y-%m-%d'),
-        recorded_by=data.get('recorded_by', 'Unknown')
-    )
-    db.session.add(record)
-    db.session.commit()
-    return jsonify({'message': 'Record added successfully!'})
+    print("Received data:", data)  # Debugging
+
+    try:
+        record = WasteRecord(
+            location_id=int(data['location_id']),
+            plastic_type_id=int(data['plastic_type_id']),
+            quantity_kg=Decimal(data['quantity_kg']),
+            recorded_date=datetime.strptime(data['date'], '%Y-%m-%d').date(),
+            recorded_by=data.get('recorded_by', 'Unknown')
+        )
+        db.session.add(record)
+        db.session.commit()
+        return jsonify({'message': 'Record added successfully!'})
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'message': f'Error saving record: {str(e)}'})
 
 @data_bp.route('/records')
 @login_required
@@ -62,11 +69,13 @@ def edit_record(id):
     record = WasteRecord.query.get(id)
     if record:
         data = request.json
-        record.quantity_kg = data['quantity_kg']
-        record.recorded_date = datetime.strptime(data['date'], '%Y-%m-%d')
-        record.recorded_by = data.get('recorded_by', 'Unknown')
-        db.session.commit()
-        return jsonify({'message': 'Record updated successfully!'})
+        try:
+            record.quantity_kg = Decimal(data['quantity_kg'])
+            record.recorded_date = datetime.strptime(data['date'], '%Y-%m-%d').date()
+            record.recorded_by = data.get('recorded_by', 'Unknown')
+            db.session.commit()
+            return jsonify({'message': 'Record updated successfully!'})
+        except Exception as e:
+            db.session.rollback()
+            return jsonify({'message': f'Error updating record: {str(e)}'})
     return jsonify({'message': 'Record not found!'})
-
-
